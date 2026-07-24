@@ -1,23 +1,34 @@
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
+import { SpawnedWalker } from './SpawnedWalker';
 
-export function Crowd({ passiveIncome }) {
-  // Hitung berapa banyak pembeli yang dimunculkan berdasarkan passive income (minimal 2, maksimal 8)
-  const maxCustomers = Math.min(Math.max(Math.floor(passiveIncome / 1500) + 2, 2), 8);
+const SpawnedList = memo(({ spawnedWalkers, onRemoveWalker }) => {
+  return (
+    <>
+      {spawnedWalkers.map((walker) => (
+        <SpawnedWalker
+          key={walker.id}
+          id={walker.id}
+          icon={walker.icon}
+          amount={walker.amount}
+          onRemove={onRemoveWalker}
+        />
+      ))}
+    </>
+  );
+});
 
-  // Variasi karakter pembeli di Kantin Gonzaga
-  const customerTypes = ['👨‍🎓', '👩‍🎓', '🧑‍🏫', '🎒', '🚶‍♂️', '🚶‍♀️'];
+export function Crowd({ passiveIncome, spawnedWalkers, onRemoveWalker, clickPower }) {
+  const maxCustomers = Math.min(Math.max(Math.floor(passiveIncome / 1500) + 2, 2), 6);
+  const customerTypes = ['👨‍🎓', '👩‍🎓', '🧑‍🏫', '🎒', '🚶‍♂️', '🚶‍♀️', '🙏', '⭐'];
 
-  // Buat daftar properti pelanggan dengan durasi dan delay berjalan yang konsisten
-  const customers = useMemo(() => {
-    return Array.from({ length: 8 }).map((_, index) => {
+  const autoCustomers = useMemo(() => {
+    return Array.from({ length: 6 }).map((_, index) => {
       const icon = customerTypes[index % customerTypes.length];
-      // Kecepatan jalan berkisar antara 6 s.d. 10 detik
       const duration = 6 + (index % 3) * 2; 
-      // Delay bertahap (stagger) supaya tidak jalan bersamaan
       const delay = index * 1.8; 
 
       return {
-        id: index,
+        id: `auto-${index}`,
         icon,
         duration: `${duration}s`,
         delay: `${delay}s`,
@@ -26,27 +37,40 @@ export function Crowd({ passiveIncome }) {
   }, []);
 
   return (
-    <div className="@container relative w-full h-16 bg-slate-950/50 rounded-xl overflow-hidden border border-slate-700/50 my-3 flex items-center">
-      {/* Label Info Area */}
-      <span className="absolute top-1 left-2 text-[10px] text-slate-500 font-mono pointer-events-none z-10 select-none">
-        AREA KANTIN
-      </span>
-
-      {/* Render Pembeli yang Berjalan */}
-      {customers.slice(0, maxCustomers).map((customer) => (
+    <div 
+      style={{
+        position: 'absolute',
+        bottom: '40px', // Posisi jalur jalan di bagian bawah layar utama
+        left: 0,
+        width: '100%',
+        height: '80px',
+        pointerEvents: 'none', // Supaya klik tembus ke layar utama
+        overflow: 'hidden',
+        zIndex: 10,
+      }}
+    >
+      {/* Pembeli Otomatis (Pasif) */}
+      {autoCustomers.slice(0, maxCustomers).map((customer) => (
         <div
           key={customer.id}
-          className="customer-walker select-none"
+          className="customer-walker-auto"
           style={{
             '--duration': customer.duration,
             '--delay': customer.delay,
+            userSelect: 'none',
           }}
         >
-          <span className="customer-bounce text-2xl">
+          <span className="buying-popup" style={{ '--duration': customer.duration, '--delay': customer.delay }}>
+            +Rp{clickPower.toLocaleString('id-ID')}
+          </span>
+          <span className="customer-bounce" style={{ fontSize: '32px' }}>
             {customer.icon}
           </span>
         </div>
       ))}
+
+      {/* Pembeli Hasil Spam Klik */}
+      <SpawnedList spawnedWalkers={spawnedWalkers} onRemoveWalker={onRemoveWalker} />
     </div>
   );
 }

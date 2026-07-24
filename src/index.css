@@ -1,32 +1,12 @@
 /* ==========================================
-   Modern CSS Reset & Base Setup (index.css)
+   Modern CSS Reset & Pixel Art Setup
    ========================================== */
 
 :root {
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  --color-bg: #ffffff;
-  --color-surface: #f8fafc;
-  --color-text: #0f172a;
-  --color-text-muted: #64748b;
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-border: #e2e8f0;
-
   color-scheme: light dark;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #0f172a;
-    --color-surface: #1e293b;
-    --color-text: #f8fafc;
-    --color-text-muted: #94a3b8;
-    --color-primary: #3b82f6;
-    --color-primary-hover: #60a5fa;
-    --color-border: #334155;
-  }
 }
 
 *,
@@ -44,17 +24,22 @@ html {
 }
 
 body {
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  background-color: #020617;
+  color: #f8fafc;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+}
+
+/* KUNCI VISUAL PIXEL ART: Mencegah gambar piksel kabur saat di-scale */
+img, .pixel-art {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 /* ==========================================
    Animasi Game Warung Soto (Crowd & Walkers)
    ========================================== */
 
-/* Container Pembeli Berjalan Pasif (Looping) */
 .customer-walker-auto {
   position: absolute;
   top: 52%;
@@ -69,21 +54,13 @@ body {
 }
 
 @keyframes walkAndBuyAuto {
-  0% {
-    left: -80px;
-  }
-  40% {
-    left: calc(50% - 15px);
-  }
-  60% {
-    left: calc(50% - 15px);
-  }
-  100% {
-    left: calc(100% + 100px);
-  }
+  0% { left: -80px; }
+  40% { left: calc(50% - 15px); }
+  60% { left: calc(50% - 15px); }
+  100% { left: calc(100% + 100px); }
 }
 
-/* Container Pembeli Hasil Klik (Jalan Sekali Sampai Benar-benar Keluar Viewport) */
+/* FIX FLICKER: Menambahkan 'forwards', pointer-events: none, dan handle opacity */
 .customer-walker-spawn {
   position: absolute;
   top: 52%;
@@ -92,28 +69,26 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  animation: walkAndBuySpawn 4.5s linear 1 forwards;
-  will-change: left, transform;
+  animation: walkAndBuySpawn 4.5s linear forwards;
+  will-change: left, transform, opacity;
+  pointer-events: none;
 }
 
 @keyframes walkAndBuySpawn {
-  0% {
-    left: -100px;
+  0% { 
+    left: -100px; 
+    opacity: 1;
   }
-  /* Berhenti sebentar di tengah untuk transaksi */
-  35% {
-    left: calc(50% - 15px);
-  }
-  55% {
-    left: calc(50% - 15px);
-  }
-  /* Berjalan jauh melewati area kanan hingga benar-benar hilang dari layar */
-  100% {
-    left: calc(100% + 250px);
+  35% { left: calc(50% - 15px); }
+  55% { left: calc(50% - 15px); }
+  90% { opacity: 1; }
+  /* Di 100%, dorong penuh ke kanan dan buat transparan agar tidak pernah tampak melempar ke posisi awal */
+  100% { 
+    left: calc(100% + 250px); 
+    opacity: 0;
   }
 }
 
-/* Langkah Kaki Membal */
 .customer-bounce {
   display: inline-block;
   animation: customerStep 0.35s ease-in-out infinite alternate;
@@ -121,15 +96,10 @@ body {
 }
 
 @keyframes customerStep {
-  0% {
-    transform: translateY(0) rotate(-4deg);
-  }
-  100% {
-    transform: translateY(-6px) rotate(4deg);
-  }
+  0% { transform: translateY(0) rotate(-4deg); }
+  100% { transform: translateY(-6px) rotate(4deg); }
 }
 
-/* Pop-up +Rp Muncul di Atas Kepala Karakter */
 .buying-popup {
   position: absolute;
   top: -14px;
