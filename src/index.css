@@ -2,13 +2,10 @@
    Modern CSS Reset & Base Setup (index.css)
    ========================================== */
 
-/* 1. Design Tokens & Root Variables */
 :root {
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  /* Light Theme Colors */
   --color-bg: #ffffff;
   --color-surface: #f8fafc;
   --color-text: #0f172a;
@@ -17,14 +14,9 @@
   --color-primary-hover: #1d4ed8;
   --color-border: #e2e8f0;
 
-  /* UI Tokens */
-  --radius: 0.5rem;
-  --transition-fast: 150ms ease;
-
   color-scheme: light dark;
 }
 
-/* Automatic Dark Mode */
 @media (prefers-color-scheme: dark) {
   :root {
     --color-bg: #0f172a;
@@ -37,7 +29,6 @@
   }
 }
 
-/* 2. Universal Box-Sizing & Reset Padding/Margin */
 *,
 *::before,
 *::after {
@@ -46,13 +37,9 @@
   padding: 0;
 }
 
-/* 3. Document Body & Smooth Scrolling */
 html {
   font-family: var(--font-sans);
   line-height: 1.5;
-  -webkit-text-size-adjust: 100%;
-  -moz-tab-size: 4;
-  tab-size: 4;
   scroll-behavior: smooth;
 }
 
@@ -60,279 +47,135 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   min-height: 100vh;
-  text-rendering: optimizeSpeed;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* 4. Responsive Media Defaults */
-img,
-picture,
-video,
-canvas,
-svg {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-
-/* 5. Typography Reset */
-h1, h2, h3, h4, h5, h6 {
-  overflow-wrap: break-word;
-  font-weight: 700;
-  line-height: 1.25;
-}
-
-p, table, blockquote, ul, ol {
-  overflow-wrap: break-word;
-}
-
-ul[role='list'],
-ol[role='list'] {
-  list-style: none;
-}
-
-/* 6. Form Controls & Interactive Elements */
-input,
-button,
-textarea,
-select {
-  font: inherit;
-  color: inherit;
-  letter-spacing: inherit;
-}
-
-button {
-  cursor: pointer;
-  background: transparent;
-  border: none;
-}
-
-textarea {
-  resize: vertical;
-}
-
-a {
-  color: var(--color-primary);
-  text-decoration: inherit;
-}
-
-a:hover {
-  text-decoration: underline;
 }
 
 /* ==========================================
-   7. Helper / Utility Classes untuk Animasi
+   Animasi Game Warung Soto (Crowd & Walkers)
    ========================================== */
 
-/* PENTING: Menjamin transform bekerja pada elemen inline/span */
-.animated-element {
-  display: inline-block; 
-  will-change: transform, opacity;
-}
-
-/* Contoh 1: Fade In & Slide Up (Otomatis saat di-load) */
-.animate-fade-up {
-  display: inline-block;
-  animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Contoh 2: Interactive Pulse Effect (Di-trigger oleh class .active) */
-.animate-pulse {
-  animation: pulse 1.5s infinite ease-in-out;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
-/* Contoh 3: Transition Hover Sederhana */
-.hover-bounce {
-  display: inline-block;
-  transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-.hover-bounce:hover {
-  transform: translateY(-4px);
-}
-
-
-/* ==========================================
-   8. Animasi Orang Jalan (Walking Stickman)
-   ========================================== */
-
-/* Container Utama Orang Jalan */
-.walker-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
-  overflow: hidden;
-}
-
-.walker {
-  position: relative;
-  width: 50px;
-  height: 100px;
-  /* Membuat karakter berjalan maju melewati layar */
-  animation: walkAcross 8s linear infinite;
-}
-
-/* Kepala */
-.walker .head {
+/* Container Pembeli Berjalan Pasif (Looping) */
+.customer-walker-auto {
   position: absolute;
-  top: 0;
-  left: 15px;
-  width: 20px;
-  height: 20px;
-  background-color: var(--color-text);
-  border-radius: 50%;
-}
-
-/* Badan */
-.walker .torso {
-  position: absolute;
-  top: 20px;
-  left: 23px;
-  width: 4px;
-  height: 40px;
-  background-color: var(--color-text);
-}
-
-/* Tangan & Kaki Base */
-.walker .limb {
-  position: absolute;
-  width: 4px;
-  height: 35px;
-  background-color: var(--color-text);
-  transform-origin: top center;
-}
-
-/* Tangan */
-.walker .arm-left {
-  top: 22px;
-  left: 23px;
-  animation: swingLeg 1s ease-in-out infinite alternate;
-}
-
-.walker .arm-right {
-  top: 22px;
-  left: 23px;
-  animation: swingLeg 1s ease-in-out infinite alternate-reverse;
-}
-
-/* Kaki */
-.walker .leg-left {
-  top: 58px;
-  left: 23px;
-  animation: swingLeg 1s ease-in-out infinite alternate-reverse;
-}
-
-.walker .leg-right {
-  top: 58px;
-  left: 23px;
-  animation: swingLeg 1s ease-in-out infinite alternate;
-}
-
-/* Keyframes Gerakan Mengayun (Tangan & Kaki) */
-@keyframes swingLeg {
-  from {
-    transform: rotate(-30deg);
-  }
-  to {
-    transform: rotate(30deg);
-  }
-}
-
-/* Keyframes Berjalan Maju Menyeberang */
-@keyframes walkAcross {
-  0% {
-    transform: translateX(-150px);
-  }
-  100% {
-    transform: translateX(calc(100vw + 150px));
-  }
-}
-
-
-/* ==========================================
-   9. Animasi Game Warung Soto (Crowd & Clicker)
-   ========================================== */
-
-/* Container Pembeli Berjalan */
-.customer-walker {
-  position: absolute;
-  top: 50%;
+  top: 52%;
   transform: translateY(-50%);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  
-  /* Variabel CSS dikirim dari React via style inline */
-  animation: walkAcrossArea var(--duration, 8s) linear infinite;
+  animation: walkAndBuyAuto var(--duration, 6s) linear infinite;
   animation-delay: var(--delay, 0s);
-  will-change: transform;
+  will-change: left, transform;
 }
 
-/* Animasi Berjalan Menyeberangi Area Kantin */
-@keyframes walkAcrossArea {
+@keyframes walkAndBuyAuto {
   0% {
-    left: -60px;
+    left: -80px;
+  }
+  40% {
+    left: calc(50% - 15px);
+  }
+  60% {
+    left: calc(50% - 15px);
   }
   100% {
-    left: calc(100% + 60px);
+    left: calc(100% + 100px);
   }
 }
 
-/* Efek Membal/Langkah Kaki Pembeli */
+/* Container Pembeli Hasil Klik (Jalan Sekali Sampai Benar-benar Keluar Viewport) */
+.customer-walker-spawn {
+  position: absolute;
+  top: 52%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: walkAndBuySpawn 4.5s linear 1 forwards;
+  will-change: left, transform;
+}
+
+@keyframes walkAndBuySpawn {
+  0% {
+    left: -100px;
+  }
+  /* Berhenti sebentar di tengah untuk transaksi */
+  35% {
+    left: calc(50% - 15px);
+  }
+  55% {
+    left: calc(50% - 15px);
+  }
+  /* Berjalan jauh melewati area kanan hingga benar-benar hilang dari layar */
+  100% {
+    left: calc(100% + 250px);
+  }
+}
+
+/* Langkah Kaki Membal */
 .customer-bounce {
   display: inline-block;
-  animation: customerStep 0.4s ease-in-out infinite alternate;
+  animation: customerStep 0.35s ease-in-out infinite alternate;
   will-change: transform;
 }
 
 @keyframes customerStep {
   0% {
-    transform: translateY(0) rotate(-3deg);
+    transform: translateY(0) rotate(-4deg);
   }
   100% {
-    transform: translateY(-8px) rotate(3deg);
+    transform: translateY(-6px) rotate(4deg);
   }
 }
 
-/* Animasi Angka Melayang Saat Mangkuk Diklik */
-.animate-float-up {
-  animation: floatUpAndFade 0.8s ease-out forwards;
-  will-change: transform, opacity;
+/* Pop-up +Rp Muncul di Atas Kepala Karakter */
+.buying-popup {
+  position: absolute;
+  top: -14px;
+  color: #34d399;
+  font-weight: 800;
+  font-family: monospace;
+  font-size: 11px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  animation: popAndFade 4.5s linear infinite;
+  animation-delay: var(--delay, 0s);
+  opacity: 0;
+  white-space: nowrap;
+  z-index: 20;
 }
 
-@keyframes floatUpAndFade {
-  0% {
+.buying-popup-spawn {
+  position: absolute;
+  top: -14px;
+  color: #34d399;
+  font-weight: 800;
+  font-family: monospace;
+  font-size: 11px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  animation: popAndFadeSpawn 4.5s linear 1 forwards;
+  opacity: 0;
+  white-space: nowrap;
+  z-index: 20;
+}
+
+@keyframes popAndFadeSpawn {
+  0%, 33% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.8);
+  }
+  40% {
     opacity: 1;
-    transform: translate(-50%, 0) scale(1);
+    transform: translateY(0) scale(1.1);
   }
   50% {
-    opacity: 0.8;
-    transform: translate(-50%, -30px) scale(1.1);
+    opacity: 1;
+    transform: translateY(-3px) scale(1);
   }
-  100% {
+  58%, 100% {
     opacity: 0;
-    transform: translate(-50%, -60px) scale(0.9);
+    transform: translateY(-8px) scale(0.8);
   }
 }
