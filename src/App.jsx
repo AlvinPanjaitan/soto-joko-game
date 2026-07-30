@@ -2,12 +2,12 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { CUSTOMER_ICONS, INITIAL_UPGRADES } from './constants/gameData';
 import { loadSavedData, saveGameData, clearGameData } from './utils/storage';
 
-import { Header } from './components/Header';
 import { GameHUD } from './components/GameHUD';
 import { GameViewport } from './components/GameViewport';
 import { BowlClicker } from './components/BowlClicker';
 import { Crowd } from './components/Crowd';
 import { StoreSection } from './components/StoreSection';
+import { JokoCharacter } from './components/JokoCharacter';
 
 export default function App() {
   const savedData = useMemo(() => loadSavedData(), []);
@@ -15,9 +15,10 @@ export default function App() {
   const [money, setMoney] = useState(() => savedData?.money ?? 0);
   const [passiveIncome, setPassiveIncome] = useState(() => savedData?.passiveIncome ?? 0);
   const [clickPower, setClickPower] = useState(() => savedData?.clickPower ?? 10);
-  // Default bgTheme diubah ke ID lokasi 'kabel'
   const [bgTheme, setBgTheme] = useState(() => savedData?.bgTheme ?? 'kabel');
   
+  const [isCooking, setIsCooking] = useState(0);
+
   const [upgrades, setUpgrades] = useState(() => {
     if (savedData?.upgrades) {
       return INITIAL_UPGRADES.map((item) => {
@@ -51,9 +52,10 @@ export default function App() {
     return () => clearInterval(interval);
   }, [passiveIncome]);
 
-  // Klik Layar (Spawn Pembeli)
+  // Handler Klik Layar
   const handleBowlClick = () => {
     setMoney((prev) => prev + clickPower);
+    setIsCooking(Date.now());
 
     spawnCounterRef.current += 1;
     const uniqueId = `spawn-${Date.now()}-${performance.now()}-${spawnCounterRef.current}`;
@@ -104,24 +106,21 @@ export default function App() {
 
   return (
     <div 
+      className="game-container"
       style={{
         height: '100vh',
+        width: '100vw',
         backgroundColor: '#020617',
         color: '#f8fafc',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '12px',
         fontFamily: 'system-ui, -apple-system, sans-serif',
-        boxSizing: 'border-box',
-        width: '100vw',
+        margin: 0,
+        padding: 0,
         overflow: 'hidden',
       }}
     >
-      <Header />
-
-      {/* AREA UTAMA PERMAINAN (MEMENUHI 100% LAYAR) */}
+      {/* AREA UTAMA PERMAINAN */}
       <GameViewport bgTheme={bgTheme} onClick={handleBowlClick}>
-        {/* HUD Statistik Melayang di Kiri Atas */}
+        {/* HUD Statistik Melayang */}
         <GameHUD 
           money={money} 
           passiveIncome={passiveIncome} 
@@ -131,24 +130,28 @@ export default function App() {
           onReset={resetGame} 
         />
 
-        {/* Mangkuk Soto di Tengah (Area Bermain Bebas Klik) */}
+        {/* Karakter Pak Joko */}
+        <JokoCharacter isCooking={isCooking} bgTheme={bgTheme} />
+
+        {/* Mangkuk Soto Component */}
         <BowlClicker clickPower={clickPower} />
 
-        {/* Panel Toko Upgrade Melayang di Pojok Kanan (Vertical Sidebar) */}
-        <StoreSection 
-          upgrades={upgrades} 
-          money={money} 
-          onBuyUpgrade={buyUpgrade} 
-        />
-
-        {/* Area Pejalan Kaki Terisolasi di Jalur Bawah */}
+        {/* Pejalan Kaki */}
         <Crowd 
           passiveIncome={passiveIncome} 
           spawnedWalkers={spawnedWalkers} 
           onRemoveWalker={removeWalker}
           clickPower={clickPower}
+          bgTheme={bgTheme}
         />
       </GameViewport>
+
+      {/* Panel Toko Upgrade (Berada di luar GameViewport agar bisa menjadi stacked vertical di mobile) */}
+      <StoreSection 
+        upgrades={upgrades} 
+        money={money} 
+        onBuyUpgrade={buyUpgrade} 
+      />
     </div>
   );
 }

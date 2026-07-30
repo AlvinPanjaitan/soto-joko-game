@@ -24,4 +24,4 @@ export function clearGameData() {
   } catch (e) {
     console.error('Gagal menghapus data dari localStorage', e);
   }
-}
+} 

@@ -7,17 +7,12 @@ export function StoreSection({ upgrades, money, onBuyUpgrade }) {
   return (
     <aside
       onClick={(e) => e.stopPropagation()} // Mencegah klik di area toko memicu spawn pembeli
+      className={`store-drawer ${isOpen ? 'is-open' : 'is-closed'}`}
       style={{
-        position: 'absolute',
-        top: '70px',
-        right: '16px',
-        width: '340px',
-        maxHeight: isOpen ? 'calc(100% - 90px)' : '48px',
         backgroundColor: 'rgba(15, 23, 42, 0.94)',
         backdropFilter: 'blur(10px)',
         border: '1px solid rgba(255, 255, 255, 0.15)',
-        borderRadius: '16px',
-        padding: '12px 14px',
+        padding: '10px 12px',
         boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)',
         display: 'flex',
         flexDirection: 'column',
@@ -32,40 +27,42 @@ export function StoreSection({ upgrades, money, onBuyUpgrade }) {
         style={{ 
           display: 'flex', 
           flexDirection: 'column', 
-          gap: '10px', 
-          paddingBottom: isOpen ? '10px' : '0', 
+          gap: '8px', 
+          paddingBottom: isOpen ? '8px' : '0', 
           borderBottom: isOpen ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+          flexShrink: 0
         }}
       >
         <div 
           onClick={() => setIsOpen((prev) => !prev)}
           style={{ 
             display: 'flex', 
-            justify: 'space-between', 
+            justifyContent: 'space-between', 
             alignItems: 'center', 
             cursor: 'pointer',
             userSelect: 'none',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '16px' }}>🛒</span>
-            <h2 style={{ fontSize: '13px', fontWeight: '800', color: '#f8fafc', margin: 0, letterSpacing: '0.5px' }}>
+            <span style={{ fontSize: '15px' }}>🛒</span>
+            <h2 style={{ fontSize: '12px', fontWeight: '800', color: '#f8fafc', margin: 0, letterSpacing: '0.5px' }}>
               STORE & UPGRADE
             </h2>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '11px', color: '#64748b', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '10px', color: '#64748b', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>
               {upgrades.filter((u) => u.category === activeTab).length} Item
             </span>
             <button
+              className="store-toggle-btn"
               style={{
                 backgroundColor: 'rgba(255, 255, 255, 0.1)',
                 color: '#f59e0b',
                 border: 'none',
                 borderRadius: '6px',
-                width: '24px',
-                height: '24px',
+                width: '22px',
+                height: '22px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -74,7 +71,7 @@ export function StoreSection({ upgrades, money, onBuyUpgrade }) {
                 cursor: 'pointer',
               }}
             >
-              {isOpen ? '▲' : '▼'}
+              {isOpen ? '▼' : '▲'}
             </button>
           </div>
         </div>
@@ -93,9 +90,9 @@ export function StoreSection({ upgrades, money, onBuyUpgrade }) {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   style={{
-                    padding: '6px 4px',
-                    borderRadius: '8px',
-                    fontSize: '11px',
+                    padding: '5px 2px',
+                    borderRadius: '6px',
+                    fontSize: '10px',
                     fontWeight: 'bold',
                     border: '1px solid',
                     borderColor: isActive ? '#f59e0b' : '#334155',
@@ -113,7 +110,7 @@ export function StoreSection({ upgrades, money, onBuyUpgrade }) {
         )}
       </div>
 
-      {/* List Item Upgrade Vertikal dengan Flexbox Proporsional */}
+      {/* List Item Upgrade Vertikal */}
       {isOpen && (
         <div 
           style={{ 
@@ -121,9 +118,9 @@ export function StoreSection({ upgrades, money, onBuyUpgrade }) {
             overflowY: 'auto', 
             display: 'flex', 
             flexDirection: 'column', 
-            gap: '8px', 
+            gap: '6px', 
             paddingRight: '2px',
-            marginTop: '10px',
+            marginTop: '8px',
           }}
         >
           {upgrades
@@ -138,9 +135,9 @@ export function StoreSection({ upgrades, money, onBuyUpgrade }) {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
-                    padding: '10px 12px',
-                    borderRadius: '12px',
+                    gap: '8px',
+                    padding: '8px 10px',
+                    borderRadius: '10px',
                     border: '1px solid',
                     backgroundColor: canAfford ? 'rgba(30, 41, 59, 0.85)' : 'rgba(2, 6, 23, 0.5)',
                     borderColor: canAfford ? '#334155' : '#1e293b',
@@ -152,14 +149,14 @@ export function StoreSection({ upgrades, money, onBuyUpgrade }) {
                   {/* Icon Box */}
                   <div 
                     style={{ 
-                      fontSize: '22px', 
+                      fontSize: '18px', 
                       backgroundColor: '#020617', 
-                      width: '40px',
-                      height: '40px',
+                      width: '36px',
+                      height: '36px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      borderRadius: '8px', 
+                      borderRadius: '6px', 
                       border: '1px solid #1e293b', 
                       flexShrink: 0 
                     }}
@@ -167,13 +164,13 @@ export function StoreSection({ upgrades, money, onBuyUpgrade }) {
                     {item.icon}
                   </div>
 
-                  {/* Informasi Item (Mengisi Sisa Ruang Tengah Secara Seimbang) */}
+                  {/* Informasi Item */}
                   <div style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <h3 
                         style={{ 
                           fontWeight: 'bold', 
-                          fontSize: '12px', 
+                          fontSize: '11px', 
                           color: '#f1f5f9', 
                           margin: 0,
                           whiteSpace: 'nowrap',
@@ -185,11 +182,11 @@ export function StoreSection({ upgrades, money, onBuyUpgrade }) {
                       </h3>
                       <span 
                         style={{ 
-                          fontSize: '9px', 
+                          fontSize: '8px', 
                           backgroundColor: 'rgba(245, 158, 11, 0.15)', 
                           color: '#f59e0b', 
                           fontWeight: 'bold', 
-                          padding: '1px 5px', 
+                          padding: '1px 4px', 
                           borderRadius: '4px',
                           border: '1px solid rgba(245, 158, 11, 0.25)',
                           flexShrink: 0
@@ -198,7 +195,7 @@ export function StoreSection({ upgrades, money, onBuyUpgrade }) {
                         Lv.{item.level}
                       </span>
                     </div>
-                    <p style={{ fontSize: '10px', color: '#94a3b8', margin: '3px 0 0 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <p style={{ fontSize: '9px', color: '#94a3b8', margin: '2px 0 0 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {item.desc}
                     </p>
                   </div>
@@ -208,10 +205,10 @@ export function StoreSection({ upgrades, money, onBuyUpgrade }) {
                     onClick={() => onBuyUpgrade(item)}
                     disabled={!canAfford}
                     style={{
-                      padding: '6px 12px',
-                      borderRadius: '8px',
+                      padding: '5px 10px',
+                      borderRadius: '6px',
                       fontWeight: 'bold',
-                      fontSize: '11px',
+                      fontSize: '10px',
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
@@ -222,11 +219,11 @@ export function StoreSection({ upgrades, money, onBuyUpgrade }) {
                       backgroundColor: canAfford ? '#f59e0b' : '#1e293b',
                       color: canAfford ? '#020617' : '#64748b',
                       transition: 'all 0.15s',
-                      minWidth: '70px',
+                      minWidth: '65px',
                     }}
                   >
                     <span>BELI</span>
-                    <span style={{ fontFamily: 'monospace', fontSize: '9px', fontWeight: '700', marginTop: '1px' }}>
+                    <span style={{ fontFamily: 'monospace', fontSize: '8px', fontWeight: '700', marginTop: '1px' }}>
                       Rp {currentCost.toLocaleString('id-ID')}
                     </span>
                   </button>

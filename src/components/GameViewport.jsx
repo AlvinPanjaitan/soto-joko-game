@@ -1,37 +1,64 @@
+import React, { useState, useEffect } from 'react';
 import { BACKGROUND_LOCATIONS } from '../constants/gameData';
 
 export function GameViewport({ children, bgTheme, onClick }) {
+  // Inisialisasi state langsung dari ukuran window saat ini
+  const [isMobile, setIsMobile] = useState(() => 
+    typeof window !== 'undefined' ? window.innerWidth <= 768 : false
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const currentLocation = BACKGROUND_LOCATIONS.find((loc) => loc.id === bgTheme) || BACKGROUND_LOCATIONS[0];
+
+  // Tentukan bgPosition berdasarkan lebar layar
+  const activeBgPosition = isMobile 
+    ? (currentLocation.mobileBgPosition || currentLocation.bgPosition)
+    : currentLocation.bgPosition;
+
+  // Tentukan bgSize berdasarkan lebar layar
+  const activeBgSize = isMobile
+    ? (currentLocation.mobileBgSize || currentLocation.bgSize || 'cover')
+    : (currentLocation.bgSize || 'cover');
+
+  // Tentukan jokoPos berdasarkan lebar layar
+  const activeJokoPos = isMobile && currentLocation.mobileJokoPos
+    ? currentLocation.mobileJokoPos
+    : currentLocation.jokoPos;
 
   return (
     <div
       onClick={onClick}
+      className="game-viewport"
       style={{
         width: '100%',
-        flex: 1,
-        minHeight: '380px',
+        height: '100%',
         backgroundColor: currentLocation.bgColor,
         backgroundImage: currentLocation.bgImage ? `url(${currentLocation.bgImage})` : 'none',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundSize: activeBgSize,
+        backgroundPosition: activeBgPosition,
         backgroundRepeat: 'no-repeat',
-        borderRadius: '16px',
-        border: '2px solid #334155',
-        overflow: 'hidden',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '16px',
-        userSelect: 'none',
-        boxSizing: 'border-box',
-        transition: 'background-color 0.4s ease',
-        cursor: 'pointer',
         position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      {children}
+      {/* Meneruskan activeJokoPos dan isMobile ke setiap komponen anak */}
+      {React.Children.map(children, (child) => {
+        if (React.isValidElement(child)) {
+          return React.cloneElement(child, { 
+            jokoPos: activeJokoPos,
+            isMobile: isMobile 
+          });
+        }
+        return child;
+      })}
     </div>
   );
 }
