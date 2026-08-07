@@ -1,0 +1,148 @@
+/* ==========================================
+   Animasi Game Warung Soto (Crowd & Walkers)
+   ========================================== */
+
+.game-viewport,
+.game-viewport *,
+.customer-walker-auto,
+.customer-walker-spawn,
+.customer-bounce {
+  overflow: visible !important;
+}
+
+.customer-walker-auto {
+  position: absolute;
+  top: var(--crowd-top, 42%);
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: walkAndBuyAuto var(--duration, 6s) linear infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: left, transform;
+  z-index: 10;
+}
+
+@keyframes walkAndBuyAuto {
+  0% { left: -100px; }
+  40% { left: calc(50% - 15px); }
+  60% { left: calc(50% - 15px); }
+  100% { left: calc(100% + 120px); }
+}
+
+.customer-walker-spawn {
+  position: absolute;
+  top: var(--crowd-top, 42%);
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: walkAndBuySpawn 4.5s linear forwards;
+  will-change: left, transform, opacity;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes walkAndBuySpawn {
+  0% { 
+    left: -100px; 
+    opacity: 1;
+  }
+  35% { left: calc(50% - 15px); }
+  55% { left: calc(50% - 15px); }
+  90% { opacity: 1; }
+  100% { 
+    left: calc(100% + 250px); 
+    opacity: 0;
+  }
+}
+
+.customer-bounce {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: customerStep 0.45s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes customerStep {
+  0% { transform: translateY(0) rotate(-1.5deg); }
+  100% { transform: translateY(-3px) rotate(1.5deg); }
+}
+
+.customer-bounce.is-buying {
+  animation: none !important;
+  transform: translateY(0) rotate(0deg);
+}
+
+.customer-bounce img {
+  height: var(--customer-height, 80px);
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.4));
+  transition: transform 0.2s ease, filter 0.2s ease;
+  transform-origin: bottom center;
+}
+
+@media (max-width: 768px) {
+  .customer-walker-auto,
+  .customer-walker-spawn {
+    top: var(--crowd-mobile-top, 44%);
+  }
+
+  .customer-bounce img {
+    height: var(--customer-mobile-height, 65px);
+  }
+}
+
+.buying-popup {
+  position: absolute;
+  top: -30px;
+  color: #34d399;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  animation: popAndFade 4.5s linear infinite;
+  animation-delay: var(--delay, 0s);
+  opacity: 0;
+  white-space: nowrap;
+  z-index: 20;
+}
+
+.buying-popup-spawn {
+  position: absolute;
+  top: -30px;
+  color: #34d399;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  animation: popAndFadeSpawn 4.5s linear 1 forwards;
+  opacity: 0;
+  white-space: nowrap;
+  z-index: 20;
+}
+
+@keyframes popAndFadeSpawn {
+  0%, 33% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(0) scale(1.1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-3px) scale(1);
+  }
+  58%, 100% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.8);
+  }
+}

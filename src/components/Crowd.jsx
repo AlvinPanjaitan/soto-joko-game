@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect, memo } from 'react';
 import { SpawnedWalker } from './SpawnedWalker';
 import { getCustomersByLocation, BACKGROUND_LOCATIONS } from '../constants/gameData';
+import '../styles/CustomerCrowd.css';
 
 // Komponen individual untuk mendeteksi siklus berjalan & membeli
 const AutoWalker = memo(({ customer, clickPower }) => {
@@ -10,11 +11,6 @@ const AutoWalker = memo(({ customer, clickPower }) => {
     // 1. Ekstraksi durasi total animasi (contoh: "8s" -> 8000 ms)
     const totalDurationMs = parseFloat(customer.duration) * 1000;
     const delayMs = parseFloat(customer.delay) * 1000;
-
-    // Karakter sampai di tengah pada 40% durasi animasi dan berhenti hingga 60%
-    const arriveTimeMs = delayMs + totalDurationMs * 0.4;
-    const leaveTimeMs = delayMs + totalDurationMs * 0.6;
-    const cycleTimeMs = delayMs + totalDurationMs;
 
     let arriveTimer;
     let leaveTimer;
@@ -92,8 +88,9 @@ const SpawnedList = memo(({ spawnedWalkers, onRemoveWalker, isMobile }) => {
         <SpawnedWalker
           key={walker.id}
           id={walker.id}
-          // Gunakan payImage bila ada fallback image
-          image={walker.image || walker.icon}
+          image={walker.image}
+          payImage={walker.payImage} // ✅ DIPERBAIKI: Mengoper prop payImage ke SpawnedWalker
+          icon={walker.icon}
           height={isMobile ? walker.mobileHeight : walker.height}
           amount={walker.amount}
           onRemove={onRemoveWalker}
@@ -135,7 +132,7 @@ export function Crowd({
       return {
         id: `auto-${index}`,
         image: customerData.image,
-        payImage: customerData.payImage, // Memasukkan payImage ke objek customer
+        payImage: customerData.payImage,
         name: customerData.name,
         height: isMobile ? customerData.mobileHeight : customerData.height,
         duration: `${duration}s`,

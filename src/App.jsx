@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { CUSTOMER_ICONS, INITIAL_UPGRADES } from './constants/gameData';
+import { getCustomersByLocation, INITIAL_UPGRADES } from './constants/gameData';
 import { loadSavedData, saveGameData, clearGameData } from './utils/storage';
 
 import { GameHUD } from './components/GameHUD';
@@ -52,19 +52,33 @@ export default function App() {
     return () => clearInterval(interval);
   }, [passiveIncome]);
 
-  // Handler Klik Layar
+  // Handler Klik Layar / Mangkuk
   const handleBowlClick = () => {
     setMoney((prev) => prev + clickPower);
     setIsCooking(Date.now());
 
     spawnCounterRef.current += 1;
     const uniqueId = `spawn-${Date.now()}-${performance.now()}-${spawnCounterRef.current}`;
-    const randomIcon = CUSTOMER_ICONS[Math.floor(Math.random() * CUSTOMER_ICONS.length)];
     
-    setSpawnedWalkers((prev) => [
-      ...prev,
-      { id: uniqueId, icon: randomIcon, amount: clickPower },
-    ]);
+    // Ambil daftar pelanggan valid sesuai lokasi aktif saat ini (kabel/kandep)
+    const availableCustomers = getCustomersByLocation(bgTheme);
+
+    if (availableCustomers && availableCustomers.length > 0) {
+      const randomIndex = Math.floor(Math.random() * availableCustomers.length);
+      const selectedCustomer = availableCustomers[randomIndex];
+
+      setSpawnedWalkers((prev) => [
+        ...prev,
+        {
+          id: uniqueId,
+          image: selectedCustomer.image,
+          payImage: selectedCustomer.payImage,
+          height: selectedCustomer.height,
+          mobileHeight: selectedCustomer.mobileHeight,
+          amount: clickPower,
+        },
+      ]);
+    }
   };
 
   // Hapus Pejalan Kaki Selesai Animasi
@@ -146,11 +160,12 @@ export default function App() {
         />
       </GameViewport>
 
-      {/* Panel Toko Upgrade (Berada di luar GameViewport agar bisa menjadi stacked vertical di mobile) */}
+      {/* Panel Toko Upgrade (DIPERBAIKI: Ditambahkan bgTheme={bgTheme}) */}
       <StoreSection 
         upgrades={upgrades} 
         money={money} 
         onBuyUpgrade={buyUpgrade} 
+        bgTheme={bgTheme} 
       />
     </div>
   );

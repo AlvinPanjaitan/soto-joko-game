@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 
 export function JokoCharacter({ isCooking, jokoPos }) {
-  const POSE_IDLE = '/assets/joko-idle.png';
-  const POSE_COOKING = '/assets/joko-cook.png';
+  const POSE_IDLE = '/assets/joko-idle.webp';
+  const POSE_COOKING = '/assets/joko-cook.webp';
 
   const [currentPose, setCurrentPose] = useState(POSE_IDLE);
   const timerRef = useRef(null);

@@ -1,12 +1,19 @@
 /* ==========================================
-   1. Modern CSS Reset & Pixel Art Setup
+   1. Warm Soto Arcade Reset & Setup
    ========================================== */
 
 :root {
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-pixel-heading: 'Press Start 2P', monospace, sans-serif;
+  --font-pixel-body: 'Pixelify Sans', system-ui, sans-serif;
 
-  color-scheme: light dark;
+  /* Color Palette: Warm Soto Arcade */
+  --bg-dark-wood: #120805;
+  --panel-wood-dark: #2a150c;
+  --panel-wood-border: #5c3218;
+  --accent-soto-yellow: #facc15;
+  --accent-soto-orange: #ea580c;
+  
+  color-scheme: dark;
 }
 
 *,
@@ -21,9 +28,9 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  font-family: var(--font-sans);
-  line-height: 1.5;
-  background-color: #020617;
+  font-family: var(--font-pixel-body);
+  line-height: 1.4;
+  background-color: var(--bg-dark-wood);
   color: #f8fafc;
   -webkit-font-smoothing: antialiased;
 }
@@ -34,16 +41,12 @@ img, .pixel-art {
   image-rendering: crisp-edges;
 }
 
-/* ==========================================
-   2. Responsive Layout Rules (Desktop vs Mobile)
-   ========================================== */
-
 .game-container {
   position: relative;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background-color: #020617;
+  background-color: var(--bg-dark-wood);
 }
 
 .game-viewport {
@@ -51,31 +54,6 @@ img, .pixel-art {
   height: 100%;
   position: relative;
   overflow: hidden;
-}
-
-/* FORCE OVERFLOW VISIBLE UNTUK SELURUH CONTAINER CROWD */
-.game-viewport,
-.game-viewport *,
-.customer-walker-auto,
-.customer-walker-spawn,
-.customer-bounce {
-  overflow: visible !important;
-}
-
-.store-drawer {
-  position: absolute;
-  top: 70px;
-  right: 16px;
-  width: 340px;
-  border-radius: 16px;
-}
-
-.store-drawer.is-open {
-  max-height: calc(100% - 90px);
-}
-
-.store-drawer.is-closed {
-  max-height: 48px;
 }
 
 @media (max-width: 768px) {
@@ -90,172 +68,5 @@ img, .pixel-art {
     flex: 1;
     width: 100%;
     position: relative;
-  }
-
-  .store-drawer {
-    position: relative !important;
-    top: auto !important;
-    right: auto !important;
-    left: auto !important;
-    bottom: auto !important;
-    width: 100% !important;
-    height: 280px !important;
-    max-height: 38vh !important;
-    border-radius: 16px 16px 0 0 !important;
-    border-bottom: none !important;
-    border-left: none !important;
-    border-right: none !important;
-    flex-shrink: 0;
-  }
-
-  .store-toggle-btn {
-    display: none !important;
-  }
-}
-
-/* ==========================================
-   3. Animasi Game Warung Soto (Crowd & Walkers)
-   ========================================== */
-
-.customer-walker-auto {
-  position: absolute;
-  /* Mengambil posisi vertikal dinamis dari gameData.js (KABEL/KANDEP) */
-  top: var(--crowd-top, 42%);
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  animation: walkAndBuyAuto var(--duration, 6s) linear infinite;
-  animation-delay: var(--delay, 0s);
-  will-change: left, transform;
-  z-index: 10;
-}
-
-@keyframes walkAndBuyAuto {
-  0% { left: -100px; }
-  40% { left: calc(50% - 15px); }
-  60% { left: calc(50% - 15px); }
-  100% { left: calc(100% + 120px); }
-}
-
-.customer-walker-spawn {
-  position: absolute;
-  /* Mengambil posisi vertikal dinamis dari gameData.js (KABEL/KANDEP) */
-  top: var(--crowd-top, 42%);
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  animation: walkAndBuySpawn 4.5s linear forwards;
-  will-change: left, transform, opacity;
-  pointer-events: none;
-  z-index: 10;
-}
-
-@keyframes walkAndBuySpawn {
-  0% { 
-    left: -100px; 
-    opacity: 1;
-  }
-  35% { left: calc(50% - 15px); }
-  55% { left: calc(50% - 15px); }
-  90% { opacity: 1; }
-  100% { 
-    left: calc(100% + 250px); 
-    opacity: 0;
-  }
-}
-
-/* ANIMASI BOUNCE SAAT JALAN */
-.customer-bounce {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: customerStep 0.45s ease-in-out infinite alternate;
-  will-change: transform;
-}
-
-@keyframes customerStep {
-  0% { transform: translateY(0) rotate(-1.5deg); }
-  100% { transform: translateY(-3px) rotate(1.5deg); }
-}
-
-/* KETIKA MEMBELI / BERHENTI DI TENGAH: MATIKAN ANIMASI JALAN (BOUNCE) */
-.customer-bounce.is-buying {
-  animation: none !important;
-  transform: translateY(0) rotate(0deg);
-}
-
-/* STYLING GAMBAR KARAKTER CROWD DENGAN UKURAN DINAMIS PER LOKASI */
-.customer-bounce img {
-  height: var(--customer-height, 80px);
-  width: auto;
-  object-fit: contain;
-  filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.4));
-  transition: transform 0.2s ease, filter 0.2s ease;
-  transform-origin: bottom center;
-}
-
-@media (max-width: 768px) {
-  .customer-walker-auto,
-  .customer-walker-spawn {
-    /* Mengambil posisi vertikal mobile dinamis dari gameData.js */
-    top: var(--crowd-mobile-top, 44%);
-  }
-
-  .customer-bounce img {
-    height: var(--customer-mobile-height, 65px);
-  }
-}
-
-.buying-popup {
-  position: absolute;
-  top: -30px;
-  color: #34d399;
-  font-weight: 800;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
-  pointer-events: none;
-  animation: popAndFade 4.5s linear infinite;
-  animation-delay: var(--delay, 0s);
-  opacity: 0;
-  white-space: nowrap;
-  z-index: 20;
-}
-
-.buying-popup-spawn {
-  position: absolute;
-  top: -30px;
-  color: #34d399;
-  font-weight: 800;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
-  pointer-events: none;
-  animation: popAndFadeSpawn 4.5s linear 1 forwards;
-  opacity: 0;
-  white-space: nowrap;
-  z-index: 20;
-}
-
-@keyframes popAndFadeSpawn {
-  0%, 33% {
-    opacity: 0;
-    transform: translateY(6px) scale(0.8);
-  }
-  40% {
-    opacity: 1;
-    transform: translateY(0) scale(1.1);
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(-3px) scale(1);
-  }
-  58%, 100% {
-    opacity: 0;
-    transform: translateY(-8px) scale(0.8);
   }
 }
