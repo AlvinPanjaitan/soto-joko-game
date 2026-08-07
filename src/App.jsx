@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { getCustomersByLocation, INITIAL_UPGRADES } from './constants/gameData';
 import { loadSavedData, saveGameData, clearGameData } from './utils/storage';
 
+import { LoadingScreen } from './components/LoadingScreen';
 import { GameHUD } from './components/GameHUD';
 import { GameViewport } from './components/GameViewport';
 import { BowlClicker } from './components/BowlClicker';
@@ -12,6 +13,7 @@ import { JokoCharacter } from './components/JokoCharacter';
 export default function App() {
   const savedData = useMemo(() => loadSavedData(), []);
 
+  const [isLoading, setIsLoading] = useState(true);
   const [money, setMoney] = useState(() => savedData?.money ?? 0);
   const [passiveIncome, setPassiveIncome] = useState(() => savedData?.passiveIncome ?? 0);
   const [clickPower, setClickPower] = useState(() => savedData?.clickPower ?? 10);
@@ -132,6 +134,14 @@ export default function App() {
         overflow: 'hidden',
       }}
     >
+      {/* LOADING SCREEN OVERLAY */}
+      {isLoading && (
+        <LoadingScreen 
+          bgTheme={bgTheme} 
+          onFinish={() => setIsLoading(false)} 
+        />
+      )}
+
       {/* AREA UTAMA PERMAINAN */}
       <GameViewport bgTheme={bgTheme} onClick={handleBowlClick}>
         {/* HUD Statistik Melayang */}
@@ -160,7 +170,7 @@ export default function App() {
         />
       </GameViewport>
 
-      {/* Panel Toko Upgrade (DIPERBAIKI: Ditambahkan bgTheme={bgTheme}) */}
+      {/* Panel Toko Upgrade */}
       <StoreSection 
         upgrades={upgrades} 
         money={money} 
