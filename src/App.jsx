@@ -9,11 +9,13 @@ import { BowlClicker } from './components/BowlClicker';
 import { Crowd } from './components/Crowd';
 import { StoreSection } from './components/StoreSection';
 import { JokoCharacter } from './components/JokoCharacter';
+import { ResetModal } from './components/ResetModal'; // Import ResetModal
 
 export default function App() {
   const savedData = useMemo(() => loadSavedData(), []);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false); // State untuk modal
   const [money, setMoney] = useState(() => savedData?.money ?? 0);
   const [passiveIncome, setPassiveIncome] = useState(() => savedData?.passiveIncome ?? 0);
   const [clickPower, setClickPower] = useState(() => savedData?.clickPower ?? 10);
@@ -62,8 +64,7 @@ export default function App() {
     spawnCounterRef.current += 1;
     const uniqueId = `spawn-${Date.now()}-${performance.now()}-${spawnCounterRef.current}`;
     
-    // Ambil daftar pelanggan valid sesuai lokasi aktif saat ini (kabel/kandep)
-    const availableCustomers = getCustomersByLocation(bgTheme);
+    const availableCustomers = getCustomersByLocation(bgTheme, upgrades);
 
     if (availableCustomers && availableCustomers.length > 0) {
       const randomIndex = Math.floor(Math.random() * availableCustomers.length);
@@ -107,17 +108,16 @@ export default function App() {
     }
   };
 
-  // Reset Data
-  const resetGame = () => {
-    if (window.confirm('Yakin ingin mereset seluruh progress game Warung Soto?')) {
-      clearGameData();
-      setMoney(0);
-      setPassiveIncome(0);
-      setClickPower(10);
-      setBgTheme('kabel');
-      setUpgrades(INITIAL_UPGRADES);
-      setSpawnedWalkers([]);
-    }
+  // Eksekusi Reset Data Game
+  const handleConfirmReset = () => {
+    clearGameData();
+    setMoney(0);
+    setPassiveIncome(0);
+    setClickPower(10);
+    setBgTheme('kabel');
+    setUpgrades(INITIAL_UPGRADES);
+    setSpawnedWalkers([]);
+    setIsResetModalOpen(false); // Tutup modal setelah reset
   };
 
   return (
@@ -142,6 +142,14 @@ export default function App() {
         />
       )}
 
+      {/* CUSTOM RESET CONFIRMATION MODAL */}
+      <ResetModal
+        isOpen={isResetModalOpen}
+        onClose={() => setIsResetModalOpen(false)}
+        onConfirm={handleConfirmReset}
+        bgTheme={bgTheme}
+      />
+
       {/* AREA UTAMA PERMAINAN */}
       <GameViewport bgTheme={bgTheme} onClick={handleBowlClick}>
         {/* HUD Statistik Melayang */}
@@ -151,7 +159,7 @@ export default function App() {
           clickPower={clickPower} 
           bgTheme={bgTheme} 
           setBgTheme={setBgTheme} 
-          onReset={resetGame} 
+          onReset={() => setIsResetModalOpen(true)} // Buka modal custom saat tombol reset di-klik
         />
 
         {/* Karakter Pak Joko */}
