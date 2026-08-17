@@ -4,11 +4,11 @@ import '../styles/LoadingScreen.css';
 export function LoadingScreen({ onFinish, bgTheme = 'kabel' }) {
   const [progress, setProgress] = useState(0);
   const [isReady, setIsReady] = useState(false);
-  const [isGameStarted, setIsGameStarted] = useState(false); // State untuk trigger gambar senang Pak Joko
+  const [isGameStarted, setIsGameStarted] = useState(false); 
   const [isFadingOut, setIsFadingOut] = useState(false);
 
   useEffect(() => {
-    // Simulasi progress loading
+    
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -23,7 +23,7 @@ export function LoadingScreen({ onFinish, bgTheme = 'kabel' }) {
     return () => clearInterval(interval);
   }, []);
 
-  // Saat progress 100%, tandai game siap
+  
   useEffect(() => {
     if (progress === 100) {
       const timer = setTimeout(() => {
@@ -33,17 +33,17 @@ export function LoadingScreen({ onFinish, bgTheme = 'kabel' }) {
     }
   }, [progress]);
 
-  // Handler saat tombol MULAI MAIN diklik
+  
   const handleStartGame = () => {
-    // 1. Ubah pose Pak Joko jadi senang!
+    
     setIsGameStarted(true);
 
-    // 2. Beri waktu pemain melihat pose senang Pak Joko (600ms) sebelum fade-out
+    
     setTimeout(() => {
       setIsFadingOut(true);
       setTimeout(() => {
         if (onFinish) onFinish();
-      }, 400); // Durasi animasi fade out
+      }, 400); 
     }, 600);
   };
 
@@ -51,7 +51,7 @@ export function LoadingScreen({ onFinish, bgTheme = 'kabel' }) {
     <div className={`loading-screen theme-${bgTheme} ${isFadingOut ? 'fade-out' : ''}`}>
       <div className="loading-card">
         
-        {/* AVATAR PAK JOKO (BERGANTI POSE SAAT DIKLIK) */}
+        
         <div className="loading-avatar-wrapper">
           <div className={`loading-avatar-frame ${isGameStarted ? 'joko-happy-active' : ''}`}>
             <img 
@@ -62,13 +62,13 @@ export function LoadingScreen({ onFinish, bgTheme = 'kabel' }) {
           </div>
         </div>
 
-        {/* 1. TITLE GAME */}
+
         <div className="loading-title-group">
           <h1 className="loading-title">WARUNG SOTO</h1>
           <p className="loading-subtitle">JOKO</p>
         </div>
 
-        {/* 2. ACTION AREA (LOADING BAR / TOMBOL MASUK) */}
+
         <div className="loading-action-area">
           {!isReady ? (
             <div className="loading-bar-container">
@@ -86,12 +86,12 @@ export function LoadingScreen({ onFinish, bgTheme = 'kabel' }) {
               onClick={handleStartGame}
               disabled={isGameStarted}
             >
-              {isGameStarted ? 'BISMILLAH!' : 'MULAI MAIN'}
+              {isGameStarted ? 'BERMAIN!!' : 'MULAI MAIN'}
             </button>
           )}
         </div>
 
-        {/* 3. INSTRUKSI GAME CLICKER */}
+
         <div className="loading-instructions">
           <div className="instruction-badge">💡 CARA MAIN</div>
           <p className="instruction-text">

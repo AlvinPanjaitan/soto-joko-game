@@ -1,11 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
+import { BACKGROUND_LOCATIONS } from '../constants/gameData';
 
-export function JokoCharacter({ isCooking, jokoPos }) {
+export function JokoCharacter({ isCooking, bgTheme = 'kabel' }) {
   const POSE_IDLE = '/assets/joko-idle.webp';
   const POSE_COOKING = '/assets/joko-cook.webp';
 
   const [currentPose, setCurrentPose] = useState(POSE_IDLE);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768);
   const timerRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (isCooking) {
@@ -27,16 +38,16 @@ export function JokoCharacter({ isCooking, jokoPos }) {
     };
   }, [isCooking]);
 
-  // Fallback aman jika jokoPos belum terdefinisi
-  const pos = jokoPos || { bottom: '15%', left: '39%', height: '70vh' };
+  const currentLocation = BACKGROUND_LOCATIONS.find((loc) => loc.id === bgTheme) || BACKGROUND_LOCATIONS[0];
+  const pos = isMobile && currentLocation.mobileJokoPos ? currentLocation.mobileJokoPos : currentLocation.jokoPos;
 
   return (
     <div
       style={{
         position: 'absolute',
-        bottom: pos.bottom,
-        left: pos.left,
-        transform: 'translateX(-50%)',
+        bottom: pos.bottom || '15%',
+        left: pos.left || '40%',
+        transform: pos.transform || 'translateX(-50%)',
         zIndex: 5,
         pointerEvents: 'none',
         userSelect: 'none',
@@ -48,8 +59,9 @@ export function JokoCharacter({ isCooking, jokoPos }) {
         alt="Pak Joko"
         className="pixel-art"
         style={{
-          height: pos.height,
+          height: pos.height || '60vh',
           objectFit: 'contain',
+          display: 'block',
         }}
       />
     </div>

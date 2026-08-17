@@ -10,21 +10,10 @@ export function GameHUD({ money, passiveIncome, clickPower, bgTheme = 'kabel', s
     <div
       onClick={(e) => e.stopPropagation()}
       className={`hud-container theme-${bgTheme}`}
-      style={{
-        position: 'absolute',
-        top: '14px',
-        left: '14px',
-        right: '14px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        zIndex: 30,
-        pointerEvents: 'auto',
-      }}
     >
-      {/* HUD KIRI: STATISTIK PENDAPATAN & UANG */}
+      
       <div className="hud-badge-main">
-        {/* ROW ATAS: JUMLAH UANG */}
+        
         <div className="hud-money-row">
           <img
             src={MONEY_ICON}
@@ -42,7 +31,7 @@ export function GameHUD({ money, passiveIncome, clickPower, bgTheme = 'kabel', s
           </div>
         </div>
 
-        {/* ROW BAHAW: PASIF & KLIK */}
+
         <div className="hud-stats-row">
           <div className="hud-stat-pill passive-pill">
             <img
@@ -51,8 +40,8 @@ export function GameHUD({ money, passiveIncome, clickPower, bgTheme = 'kabel', s
               className="hud-icon-small"
               onError={(e) => (e.target.style.display = 'none')}
             />
-            <span>Pasif:</span>
-            <strong>+Rp {passiveIncome.toLocaleString('id-ID')}/s</strong>
+            <span className="hud-stat-label">Pasif:</span>
+            <strong className="hud-stat-value">+{passiveIncome.toLocaleString('id-ID')}/s</strong>
           </div>
 
           <div className="hud-stat-pill click-pill">
@@ -62,13 +51,13 @@ export function GameHUD({ money, passiveIncome, clickPower, bgTheme = 'kabel', s
               className="hud-icon-small"
               onError={(e) => (e.target.style.display = 'none')}
             />
-            <span>Klik:</span>
-            <strong>+Rp {clickPower.toLocaleString('id-ID')}</strong>
+            <span className="hud-stat-label">Klik:</span>
+            <strong className="hud-stat-value">+{clickPower.toLocaleString('id-ID')}</strong>
           </div>
         </div>
       </div>
 
-      {/* HUD KANAN: LOKASI & RESET */}
+
       <div className="hud-right-panel">
         <div className="hud-location-switch">
           {BACKGROUND_LOCATIONS.map((loc) => {

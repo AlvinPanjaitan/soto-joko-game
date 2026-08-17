@@ -5,17 +5,16 @@ import { loadSavedData, saveGameData, clearGameData } from './utils/storage';
 import { LoadingScreen } from './components/LoadingScreen';
 import { GameHUD } from './components/GameHUD';
 import { GameViewport } from './components/GameViewport';
-import { BowlClicker } from './components/BowlClicker';
 import { Crowd } from './components/Crowd';
 import { StoreSection } from './components/StoreSection';
 import { JokoCharacter } from './components/JokoCharacter';
-import { ResetModal } from './components/ResetModal'; // Import ResetModal
+import { ResetModal } from './components/ResetModal';
 
 export default function App() {
   const savedData = useMemo(() => loadSavedData(), []);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [isResetModalOpen, setIsResetModalOpen] = useState(false); // State untuk modal
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [money, setMoney] = useState(() => savedData?.money ?? 0);
   const [passiveIncome, setPassiveIncome] = useState(() => savedData?.passiveIncome ?? 0);
   const [clickPower, setClickPower] = useState(() => savedData?.clickPower ?? 10);
@@ -36,7 +35,7 @@ export default function App() {
   const [spawnedWalkers, setSpawnedWalkers] = useState([]);
   const spawnCounterRef = useRef(0);
 
-  // Auto Save Progress
+  
   useEffect(() => {
     saveGameData({
       money,
@@ -47,7 +46,7 @@ export default function App() {
     });
   }, [money, passiveIncome, clickPower, bgTheme, upgrades]);
 
-  // Loop Pendapatan Pasif (10x / detik)
+  
   useEffect(() => {
     if (passiveIncome <= 0) return;
     const interval = setInterval(() => {
@@ -56,7 +55,6 @@ export default function App() {
     return () => clearInterval(interval);
   }, [passiveIncome]);
 
-  // Handler Klik Layar / Mangkuk
   const handleBowlClick = () => {
     setMoney((prev) => prev + clickPower);
     setIsCooking(Date.now());
@@ -84,12 +82,12 @@ export default function App() {
     }
   };
 
-  // Hapus Pejalan Kaki Selesai Animasi
+  
   const removeWalker = useCallback((id) => {
     setSpawnedWalkers((prev) => prev.filter((w) => w.id !== id));
   }, []);
 
-  // Beli Upgrade
+  
   const buyUpgrade = (item) => {
     const currentCost = Math.floor(item.baseCost * Math.pow(item.costMultiplier, item.level));
 
@@ -108,7 +106,7 @@ export default function App() {
     }
   };
 
-  // Eksekusi Reset Data Game
+  
   const handleConfirmReset = () => {
     clearGameData();
     setMoney(0);
@@ -117,7 +115,7 @@ export default function App() {
     setBgTheme('kabel');
     setUpgrades(INITIAL_UPGRADES);
     setSpawnedWalkers([]);
-    setIsResetModalOpen(false); // Tutup modal setelah reset
+    setIsResetModalOpen(false);
   };
 
   return (
@@ -134,7 +132,7 @@ export default function App() {
         overflow: 'hidden',
       }}
     >
-      {/* LOADING SCREEN OVERLAY */}
+      
       {isLoading && (
         <LoadingScreen 
           bgTheme={bgTheme} 
@@ -142,7 +140,7 @@ export default function App() {
         />
       )}
 
-      {/* CUSTOM RESET CONFIRMATION MODAL */}
+
       <ResetModal
         isOpen={isResetModalOpen}
         onClose={() => setIsResetModalOpen(false)}
@@ -150,25 +148,22 @@ export default function App() {
         bgTheme={bgTheme}
       />
 
-      {/* AREA UTAMA PERMAINAN */}
+
       <GameViewport bgTheme={bgTheme} onClick={handleBowlClick}>
-        {/* HUD Statistik Melayang */}
+       
         <GameHUD 
           money={money} 
           passiveIncome={passiveIncome} 
           clickPower={clickPower} 
           bgTheme={bgTheme} 
           setBgTheme={setBgTheme} 
-          onReset={() => setIsResetModalOpen(true)} // Buka modal custom saat tombol reset di-klik
+          onReset={() => setIsResetModalOpen(true)} 
         />
 
-        {/* Karakter Pak Joko */}
+
         <JokoCharacter isCooking={isCooking} bgTheme={bgTheme} />
 
-        {/* Mangkuk Soto Component */}
-        <BowlClicker clickPower={clickPower} />
-
-        {/* Pejalan Kaki */}
+        
         <Crowd 
           passiveIncome={passiveIncome} 
           spawnedWalkers={spawnedWalkers} 
@@ -178,7 +173,6 @@ export default function App() {
         />
       </GameViewport>
 
-      {/* Panel Toko Upgrade */}
       <StoreSection 
         upgrades={upgrades} 
         money={money} 

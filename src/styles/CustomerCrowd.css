@@ -1,53 +1,39 @@
-/* ==========================================
-   Animasi Game Warung Soto (Crowd & Walkers)
-   ========================================== */
 
-.game-viewport,
-.game-viewport *,
 .customer-walker-auto,
-.customer-walker-spawn,
-.customer-bounce {
-  overflow: visible !important;
+.customer-walker-spawn {
+  position: absolute;
+  top: var(--crowd-top, 63%);
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+  z-index: 10;
 }
 
 .customer-walker-auto {
-  position: absolute;
-  top: var(--crowd-top, 42%);
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   animation: walkAndBuyAuto var(--duration, 6s) linear infinite;
   animation-delay: var(--delay, 0s);
   will-change: left, transform;
-  z-index: 10;
-}
-
-@keyframes walkAndBuyAuto {
-  0% { left: -100px; }
-  40% { left: calc(50% - 15px); }
-  60% { left: calc(50% - 15px); }
-  100% { left: calc(100% + 120px); }
 }
 
 .customer-walker-spawn {
-  position: absolute;
-  top: var(--crowd-top, 42%);
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   animation: walkAndBuySpawn 4.5s linear forwards;
   will-change: left, transform, opacity;
-  pointer-events: none;
-  z-index: 10;
+}
+
+@keyframes walkAndBuyAuto {
+  0% { left: -120px; }
+  40% { left: calc(50% - 15px); }
+  60% { left: calc(50% - 15px); }
+  100% { left: calc(100% + 150px); }
 }
 
 @keyframes walkAndBuySpawn {
   0% { 
-    left: -100px; 
+    left: -120px; 
     opacity: 1;
   }
   35% { left: calc(50% - 15px); }
@@ -60,11 +46,14 @@
 }
 
 .customer-bounce {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  height: var(--walker-height, 50vh);
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.4));
+  image-rendering: pixelated;
   animation: customerStep 0.45s ease-in-out infinite alternate;
   will-change: transform;
+  transform-origin: bottom center;
 }
 
 @keyframes customerStep {
@@ -77,55 +66,29 @@
   transform: translateY(0) rotate(0deg);
 }
 
-.customer-bounce img {
-  height: var(--customer-height, 80px);
-  width: auto;
-  object-fit: contain;
-  filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.4));
-  transition: transform 0.2s ease, filter 0.2s ease;
-  transform-origin: bottom center;
-}
-
-@media (max-width: 768px) {
-  .customer-walker-auto,
-  .customer-walker-spawn {
-    top: var(--crowd-mobile-top, 44%);
-  }
-
-  .customer-bounce img {
-    height: var(--customer-mobile-height, 65px);
-  }
+.buying-popup,
+.buying-popup-spawn {
+  position: absolute;
+  top: -24px;
+  color: #34d399;
+  font-weight: 800;
+  font-family: var(--font-pixel-heading, 'Press Start 2P', monospace);
+  font-size: 11px;
+  text-shadow: 2px 2px 0px #000000;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 20;
 }
 
 .buying-popup {
-  position: absolute;
-  top: -30px;
-  color: #34d399;
-  font-weight: 800;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
-  pointer-events: none;
   animation: popAndFade 4.5s linear infinite;
   animation-delay: var(--delay, 0s);
   opacity: 0;
-  white-space: nowrap;
-  z-index: 20;
 }
 
 .buying-popup-spawn {
-  position: absolute;
-  top: -30px;
-  color: #34d399;
-  font-weight: 800;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
-  pointer-events: none;
   animation: popAndFadeSpawn 4.5s linear 1 forwards;
   opacity: 0;
-  white-space: nowrap;
-  z-index: 20;
 }
 
 @keyframes popAndFadeSpawn {
@@ -144,5 +107,28 @@
   58%, 100% {
     opacity: 0;
     transform: translateY(-8px) scale(0.8);
+  }
+}
+
+@keyframes popAndFade {
+  0%, 35% { opacity: 0; transform: translateY(4px); }
+  40%, 55% { opacity: 1; transform: translateY(0); }
+  60%, 100% { opacity: 0; transform: translateY(-6px); }
+}
+
+@media (max-width: 768px) {
+  .customer-walker-auto,
+  .customer-walker-spawn {
+    top: var(--crowd-mobile-top, 68%);
+  }
+
+  .customer-bounce {
+    height: var(--walker-mobile-height, 30vh);
+  }
+
+  .buying-popup,
+  .buying-popup-spawn {
+    font-size: 9px;
+    top: -18px;
   }
 }

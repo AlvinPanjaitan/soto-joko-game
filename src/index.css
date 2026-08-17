@@ -1,12 +1,9 @@
-/* ==========================================
-   1. Warm Soto Arcade Reset & Setup
-   ========================================== */
 
 :root {
   --font-pixel-heading: 'Press Start 2P', monospace, sans-serif;
   --font-pixel-body: 'Pixelify Sans', system-ui, sans-serif;
 
-  /* Color Palette: Warm Soto Arcade */
+  
   --bg-dark-wood: #120805;
   --panel-wood-dark: #2a150c;
   --panel-wood-border: #5c3218;
@@ -35,7 +32,7 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* KUNCI VISUAL PIXEL ART */
+
 img, .pixel-art {
   image-rendering: pixelated;
   image-rendering: crisp-edges;

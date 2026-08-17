@@ -3,12 +3,10 @@ import { SpawnedWalker } from './SpawnedWalker';
 import { getCustomersByLocation, BACKGROUND_LOCATIONS } from '../constants/gameData';
 import '../styles/CustomerCrowd.css';
 
-// Komponen individual untuk mendeteksi siklus berjalan & membeli
 const AutoWalker = memo(({ customer, clickPower }) => {
   const [isBuying, setIsBuying] = useState(false);
 
   useEffect(() => {
-    // 1. Ekstraksi durasi total animasi (contoh: "8s" -> 8000 ms)
     const totalDurationMs = parseFloat(customer.duration) * 1000;
     const delayMs = parseFloat(customer.delay) * 1000;
 
@@ -17,21 +15,17 @@ const AutoWalker = memo(({ customer, clickPower }) => {
     let intervalTimer;
 
     const startCycle = () => {
-      // Sampai di meja/kantin -> Ganti pose ke payImage
       arriveTimer = setTimeout(() => {
         setIsBuying(true);
       }, totalDurationMs * 0.4);
 
-      // Selesai bayar -> Kembalikan ke pose berjalan biasa
       leaveTimer = setTimeout(() => {
         setIsBuying(false);
       }, totalDurationMs * 0.6);
     };
 
-    // Jalankan siklus pertama setelah delay awal
     const initialTimer = setTimeout(() => {
       startCycle();
-      // Repeating cycle untuk animasi infinite
       intervalTimer = setInterval(startCycle, totalDurationMs);
     }, delayMs);
 
@@ -43,7 +37,6 @@ const AutoWalker = memo(({ customer, clickPower }) => {
     };
   }, [customer.duration, customer.delay]);
 
-  // Pilih pose gambar berdasarkan status pembeli
   const currentImage = isBuying && customer.payImage ? customer.payImage : customer.image;
 
   return (
@@ -52,36 +45,24 @@ const AutoWalker = memo(({ customer, clickPower }) => {
       style={{
         '--duration': customer.duration,
         '--delay': customer.delay,
-        userSelect: 'none',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        '--walker-height': customer.height,
+        '--walker-mobile-height': customer.mobileHeight,
       }}
     >
-      <span
-        className="buying-popup"
-        style={{ '--duration': customer.duration, '--delay': customer.delay }}
-      >
+      <span className="buying-popup">
         +Rp{clickPower.toLocaleString('id-ID')}
       </span>
 
-      {/* RENDER GAMBAR KARAKTER PNG (Ganti image & matikan bounce saat isBuying) */}
       <img
         src={currentImage}
         alt={customer.name}
         className={`customer-bounce ${isBuying ? 'is-buying' : ''}`}
-        style={{
-          height: customer.height,
-          width: 'auto',
-          objectFit: 'contain',
-          filter: 'drop-shadow(2px 4px 6px rgba(0,0,0,0.3))',
-        }}
       />
     </div>
   );
 });
 
-const SpawnedList = memo(({ spawnedWalkers, onRemoveWalker, isMobile }) => {
+const SpawnedList = memo(({ spawnedWalkers, onRemoveWalker }) => {
   return (
     <>
       {spawnedWalkers.map((walker) => (
@@ -89,9 +70,10 @@ const SpawnedList = memo(({ spawnedWalkers, onRemoveWalker, isMobile }) => {
           key={walker.id}
           id={walker.id}
           image={walker.image}
-          payImage={walker.payImage} // ✅ DIPERBAIKI: Mengoper prop payImage ke SpawnedWalker
+          payImage={walker.payImage} 
           icon={walker.icon}
-          height={isMobile ? walker.mobileHeight : walker.height}
+          height={walker.height}
+          mobileHeight={walker.mobileHeight}
           amount={walker.amount}
           onRemove={onRemoveWalker}
         />
@@ -106,21 +88,17 @@ export function Crowd({
   onRemoveWalker,
   clickPower,
   bgTheme = 'kabel',
-  isMobile = false,
 }) {
   const maxCustomers = Math.min(Math.max(Math.floor(passiveIncome / 1500) + 2, 2), 6);
 
-  // 1. Ambil data konfigurasi lokasi aktif (KABEL / KANDEP)
   const currentLocation = useMemo(() => {
     return BACKGROUND_LOCATIONS.find((loc) => loc.id === bgTheme) || BACKGROUND_LOCATIONS[0];
   }, [bgTheme]);
 
-  // 2. Ambil daftar pembeli yang valid sesuai lokasi aktif
   const availableCustomers = useMemo(() => {
     return getCustomersByLocation(bgTheme);
   }, [bgTheme]);
 
-  // 3. Generate list pembeli otomatis beserta payImage
   const autoCustomers = useMemo(() => {
     if (!availableCustomers || availableCustomers.length === 0) return [];
 
@@ -134,23 +112,22 @@ export function Crowd({
         image: customerData.image,
         payImage: customerData.payImage,
         name: customerData.name,
-        height: isMobile ? customerData.mobileHeight : customerData.height,
+        height: customerData.height,
+        mobileHeight: customerData.mobileHeight,
         duration: `${duration}s`,
         delay: `${delay}s`,
       };
     });
-  }, [availableCustomers, isMobile]);
+  }, [availableCustomers]);
 
-  // Destructure posisi dari crowdPos lokasi aktif
-  const { top = '42%', mobileTop = '44%' } = currentLocation?.crowdPos || {};
+  const { top = '63%', mobileTop = '68%' } = currentLocation?.crowdPos || {};
 
   return (
     <div
       className="crowd-container"
       style={{
         position: 'absolute',
-        top: 0,
-        left: 0,
+        inset: 0,
         width: '100%',
         height: '100%',
         pointerEvents: 'none',
@@ -160,7 +137,6 @@ export function Crowd({
         '--crowd-mobile-top': mobileTop,
       }}
     >
-      {/* Pembeli Otomatis (Pasif) */}
       {autoCustomers.slice(0, maxCustomers).map((customer) => (
         <AutoWalker
           key={customer.id}
@@ -169,11 +145,9 @@ export function Crowd({
         />
       ))}
 
-      {/* Pembeli Hasil Spam Klik */}
       <SpawnedList
         spawnedWalkers={spawnedWalkers}
         onRemoveWalker={onRemoveWalker}
-        isMobile={isMobile}
       />
     </div>
   );

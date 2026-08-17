@@ -7,15 +7,15 @@ export function ResetModal({ isOpen, onClose, onConfirm, bgTheme = 'kabel' }) {
     <div className={`reset-modal-overlay theme-${bgTheme}`} onClick={onClose}>
       <div 
         className="reset-modal-card" 
-        onClick={(e) => e.stopPropagation()} // Mencegah modal tertutup saat diklik di dalam card
+        onClick={(e) => e.stopPropagation()} 
       >
-        {/* HEADER WARNING */}
+        
         <div className="reset-modal-header">
           <span className="reset-modal-icon">⚠️</span>
           <h2 className="reset-modal-title">RESET PROGRESS?</h2>
         </div>
 
-        {/* PESAN KONFIRMASI */}
+
         <div className="reset-modal-body">
           <p className="reset-modal-text">
             Apakah kamu yakin ingin menghapus seluruh uang dan upgrade Warung Soto Joko?
@@ -25,7 +25,7 @@ export function ResetModal({ isOpen, onClose, onConfirm, bgTheme = 'kabel' }) {
           </span>
         </div>
 
-        {/* TOMBOL AKSI */}
+
         <div className="reset-modal-actions">
           <button className="reset-btn cancel-btn" onClick={onClose}>
             BATAL

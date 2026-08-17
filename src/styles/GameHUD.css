@@ -1,10 +1,16 @@
-/* ==========================================
-   Game HUD - Base & Theme Switchable Styling
-   ========================================== */
 
-/* ------------------------------------------
-   DEFAULT THEME: KABEL (Warm Wood / Merah Soto)
-   ------------------------------------------ */
+.hud-container {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 30;
+  pointer-events: auto;
+}
+
 .hud-badge-main {
   background: linear-gradient(180deg, #3d1e11 0%, #241109 100%);
   border: 4px solid #7c3f1d;
@@ -15,9 +21,11 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  width: max-content !important;
+  width: max-content;
+  max-width: calc(100% - 130px);
   user-select: none;
   transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .hud-money-row {
@@ -25,6 +33,7 @@
   align-items: center;
   gap: 14px;
   padding: 2px 0;
+  white-space: nowrap;
 }
 
 .hud-icon-webp {
@@ -43,6 +52,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
 }
 
 .hud-currency-label {
@@ -69,20 +79,25 @@
   gap: 6px;
   padding-top: 6px;
   border-top: 2px dashed rgba(255, 255, 255, 0.12);
+  width: 100%;
 }
 
 .hud-stat-pill {
-  display: flex;
+  flex: 1;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 4px;
   background-color: rgba(18, 8, 5, 0.85);
   border: 2px solid #5c3218;
   border-radius: 8px;
-  padding: 4px 10px;
+  padding: 4px 8px;
   font-family: var(--font-pixel-body, 'Pixelify Sans', sans-serif);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #d1d5db;
+  white-space: nowrap;
+  box-sizing: border-box;
   transition: all 0.2s ease;
 }
 
@@ -90,21 +105,28 @@
   width: 14px;
   height: 14px;
   object-fit: contain;
+  flex-shrink: 0;
 }
 
-.passive-pill strong {
+.hud-stat-label {
+  font-size: 11px;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+.hud-stat-value {
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.passive-pill .hud-stat-value {
   color: #38bdf8;
-  font-family: var(--font-pixel-body, 'Pixelify Sans', sans-serif);
-  font-size: 13px;
 }
 
-.click-pill strong {
+.click-pill .hud-stat-value {
   color: #facc15;
-  font-family: var(--font-pixel-body, 'Pixelify Sans', sans-serif);
-  font-size: 13px;
 }
 
-/* RIGHT PANEL & SWITCHER */
 .hud-right-panel {
   display: flex;
   flex-direction: column;
@@ -112,6 +134,7 @@
   gap: 6px;
   user-select: none;
   margin-left: auto;
+  flex-shrink: 0;
 }
 
 .hud-location-switch {
@@ -181,9 +204,6 @@
   filter: brightness(1.15);
 }
 
-/* ------------------------------------------
-   THEME OVERRIDE: KANDEP (Muted Navy Slate)
-   ------------------------------------------ */
 .hud-container.theme-kandep .hud-badge-main {
   background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
   border-color: #334155;
@@ -215,46 +235,43 @@
   border-bottom: 3px solid #0c4a6e;
 }
 
-/* ------------------------------------------
-   MOBILE RESPONSIVE RULES (≤ 768px)
-   ------------------------------------------ */
 @media (max-width: 768px) {
   .hud-container {
     top: 8px !important;
     left: 8px !important;
     right: 8px !important;
-    gap: 8px !important;
+    gap: 6px !important;
   }
 
-  /* KOTAK UTAMA UANG */
   .hud-badge-main {
-    padding: 6px 10px !important;
+    padding: 6px 8px !important;
     border-width: 3px !important;
-    border-bottom-width: 5px !important;
+    border-bottom-width: 4px !important;
     border-radius: 10px !important;
     box-shadow: 3px 3px 0px #000000 !important;
     gap: 4px !important;
+    max-width: calc(100% - 100px) !important;
   }
 
   .hud-money-row {
     gap: 8px !important;
-    padding: 2px 0 !important;
+    padding: 1px 0 !important;
   }
 
   .hud-icon-webp {
-    width: 22px !important;
-    height: 22px !important;
-    max-width: 22px !important;
-    max-height: 22px !important;
-    transform: scale(2.6) !important;
+    width: 26px !important;       
+    height: 26px !important;
+    max-width: 26px !important;
+    max-height: 26px !important;
+    transform: scale(3.2) !important; 
   }
 
   .hud-currency-label {
-    font-size: 10px !important;
+    font-size: 9px !important;
   }
 
   .hud-money-val {
-    font-size: 13px !important;
+    font-size: 12px !important;
   }
 
   .hud-stats-row {
@@ -263,48 +280,47 @@
   }
 
   .hud-stat-pill {
-    padding: 3px 6px !important;
-    font-size: 10px !important;
+    padding: 2px 4px !important;
     border-radius: 6px !important;
     border-width: 1px !important;
-    gap: 4px !important;
+    gap: 2px !important;
+    white-space: nowrap !important;
   }
 
   .hud-icon-small {
-    width: 12px !important;
-    height: 12px !important;
+    display: none !important; 
   }
 
-  .hud-stat-pill span {
+  .hud-stat-label {
     font-size: 9px !important;
+    display: none; 
   }
 
-  .passive-pill strong,
-  .click-pill strong {
+  .hud-stat-value {
     font-size: 10px !important;
+    line-height: 1 !important;
   }
 
-  /* PANEL KANAN: DIPERBAIKI UNTUK MOBILE */
   .hud-right-panel {
-    gap: 5px !important;
-    min-width: 110px !important;
+    gap: 4px !important;
+    min-width: 88px !important;
   }
 
   .hud-location-switch {
-    padding: 3px !important;
+    padding: 2px !important;
     border-width: 2px !important;
     border-radius: 8px !important;
     box-shadow: 3px 3px 0px #000000 !important;
   }
 
   .hud-loc-btn {
-    padding: 11px 6px !important; /* Ditingkatkan dari 7px -> 11px agar presisi sejajar */
+    padding: 8px 4px !important; 
     font-size: 8px !important;
-    border-radius: 5px !important;
+    border-radius: 4px !important;
   }
 
   .hud-reset-btn {
-    padding: 5px 6px !important;
+    padding: 4px 6px !important;
     font-size: 10px !important;
     border-width: 1.5px !important;
     border-bottom-width: 3px !important;

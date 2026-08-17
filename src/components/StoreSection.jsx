@@ -5,19 +5,33 @@ export function StoreSection({ upgrades, money, onBuyUpgrade, bgTheme = 'kabel' 
   const [activeTab, setActiveTab] = useState('menu');
   const [isOpen, setIsOpen] = useState(true);
 
-  // Toggle minimize hanya diizinkan untuk layar desktop (> 768px)
+  
   const handleHeaderClick = () => {
     if (window.innerWidth > 768) {
       setIsOpen((prev) => !prev);
     }
   };
 
+  
+  const renderItemIcon = (icon, name) => {
+    if (typeof icon === 'string' && (icon.startsWith('/') || icon.includes('.'))) {
+      return (
+        <img 
+          src={icon} 
+          alt={name} 
+          className="store-item-img-icon" 
+        />
+      );
+    }
+    return icon;
+  };
+
   return (
     <aside
-      onClick={(e) => e.stopPropagation()} // Mencegah klik di area toko memicu spawn pembeli
+      onClick={(e) => e.stopPropagation()} 
       className={`store-drawer ${isOpen ? 'is-open' : 'is-closed'} theme-${bgTheme}`}
     >
-      {/* Header Toko + Tombol Hide/Show */}
+      
       <div className="store-header">
         <div className="store-header-clickable" onClick={handleHeaderClick}>
           <div className="store-title-group">
@@ -28,14 +42,13 @@ export function StoreSection({ upgrades, money, onBuyUpgrade, bgTheme = 'kabel' 
             <span className="store-item-count">
               {upgrades.filter((u) => u.category === activeTab).length} Item
             </span>
-            {/* PANAH DIPERBAIKI: Terbuka = ▲, Tertutup = ▼ */}
             <button className="store-toggle-btn" aria-label="Toggle Store">
               {isOpen ? '▲' : '▼'}
             </button>
           </div>
         </div>
 
-        {/* Tab Navigasi Kategori (Tanpa Emoticon) */}
+
         {(isOpen || window.innerWidth <= 768) && (
           <div className="store-tabs">
             {[
@@ -58,7 +71,7 @@ export function StoreSection({ upgrades, money, onBuyUpgrade, bgTheme = 'kabel' 
         )}
       </div>
 
-      {/* List Item Upgrade Vertikal */}
+
       {(isOpen || window.innerWidth <= 768) && (
         <div className="store-content-scroll">
           {upgrades
@@ -72,12 +85,12 @@ export function StoreSection({ upgrades, money, onBuyUpgrade, bgTheme = 'kabel' 
                   key={item.id}
                   className={`store-item-card ${canAfford ? 'can-afford' : 'cannot-afford'}`}
                 >
-                  {/* Icon Box */}
+                  
                   <div className="store-item-icon">
-                    {item.icon}
+                    {renderItemIcon(item.icon, item.name)}
                   </div>
 
-                  {/* Informasi Item */}
+
                   <div className="store-item-details">
                     <div className="store-item-title-row">
                       <h3 className="store-item-name">{item.name}</h3>
@@ -86,7 +99,7 @@ export function StoreSection({ upgrades, money, onBuyUpgrade, bgTheme = 'kabel' 
                     <p className="store-item-desc">{item.desc}</p>
                   </div>
 
-                  {/* Tombol Beli */}
+
                   <button
                     onClick={() => onBuyUpgrade(item)}
                     disabled={!canAfford}
